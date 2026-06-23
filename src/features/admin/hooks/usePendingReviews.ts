@@ -13,8 +13,8 @@ export function useAddAdminReply() {
   return useMutation({
     mutationFn: ({ reviewId, reply }: { reviewId: string; reply: string }) =>
       addAdminReply(reviewId, reply),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin", "reviews", "all"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["admin", "reviews", "all"] });
     },
   });
 }
@@ -23,8 +23,8 @@ export function useDeleteReview() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (reviewId: string) => deleteReview(reviewId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin", "reviews", "all"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["admin", "reviews", "all"] });
     },
   });
 }

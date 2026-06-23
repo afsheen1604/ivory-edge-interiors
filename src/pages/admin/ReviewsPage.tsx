@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Trash2, MessageSquare } from "lucide-react";
+import { Trash2, MessageSquare, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -48,7 +48,7 @@ export function ReviewsPage() {
       <div className="space-y-4">
         <h1 className="font-display text-2xl text-charcoal">Reviews</h1>
         <div className="space-y-4">
-          {[...Array(3)].map((_, i) => (
+          {Array.from({ length: 3 }).map((_, i) => (
             <Skeleton key={i} className="h-48 w-full rounded-lg" />
           ))}
         </div>
@@ -60,7 +60,7 @@ export function ReviewsPage() {
     return (
       <div className="space-y-4">
         <h1 className="font-display text-2xl text-charcoal">Reviews</h1>
-        <EmptyState title="Error" description="Failed to load reviews. Please try again." />
+        <EmptyState icon={AlertCircle} title="Error" description="Failed to load reviews. Please try again." />
       </div>
     );
   }
@@ -77,7 +77,7 @@ export function ReviewsPage() {
       </div>
 
       {!reviews || reviews.length === 0 ? (
-        <EmptyState title="No reviews yet" description="Reviews will appear here as they are submitted." />
+        <EmptyState icon={MessageSquare} title="No reviews yet" description="Reviews will appear here as they are submitted." />
       ) : (
         <div className="space-y-4">
           {reviews.map((review) => (
@@ -136,7 +136,7 @@ function ReviewCard({
           <div className="flex items-center gap-2">
             <h3 className="font-display text-lg text-charcoal">{review.reviewer_name}</h3>
             <div className="flex gap-1">
-              {[...Array(5)].map((_, i) => (
+              {Array.from({ length: 5 }).map((_, i) => (
                 <div
                   key={i}
                   className={`h-4 w-4 ${

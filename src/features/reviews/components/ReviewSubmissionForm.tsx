@@ -61,7 +61,7 @@ export function ReviewSubmissionForm() {
       });
       
       // Invalidate review queries to refresh cache
-      queryClient.invalidateQueries({ queryKey: ["reviews"] });
+      await queryClient.invalidateQueries({ queryKey: ["reviews"] });
       
       setIsSubmitted(true);
       reset();

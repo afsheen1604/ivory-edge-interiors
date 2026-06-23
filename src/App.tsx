@@ -19,6 +19,7 @@ import { AdminDashboardPage } from "@/pages/admin/AdminDashboardPage";
 import { AdminLayout } from "@/layouts/AdminLayout";
 import { ProjectsListPage } from "@/pages/admin/projects/ProjectsListPage";
 import { ProjectFormPage } from "@/pages/admin/projects/ProjectFormPage";
+import { ReviewsPage as AdminReviewsPage } from "@/pages/admin/ReviewsPage";
 import { ScrollToTop } from "@/components/common/ScrollToTop";
 
 /**
@@ -63,6 +64,7 @@ function App() {
                 <Route path="new" element={<ProjectFormPage />} />
                 <Route path=":id/edit" element={<ProjectFormPage />} />
               </Route>
+              <Route path="reviews" element={<AdminReviewsPage />} />
             </Route>
 
             <Route path="*" element={<Navigate to={ROUTES.home} replace />} />

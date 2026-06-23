@@ -12,9 +12,7 @@ export interface SubmitReviewInput {
 }
 
 /**
- * Submits a new review from a visitor. RLS (migration 0008) forces every
- * new row to start as status = 'pending' regardless of what's sent here —
- * the review only becomes publicly visible once an admin approves it.
+ * Submits a new review from a visitor. Reviews appear immediately.
  */
 export async function submitReview(input: SubmitReviewInput): Promise<void> {
   const payload: ReviewInsert = {
@@ -31,12 +29,11 @@ export async function submitReview(input: SubmitReviewInput): Promise<void> {
   }
 }
 
-/** Approved reviews, most recent first, for public display. */
+/** All reviews for public display, most recent first. */
 export async function getApprovedReviews(limit?: number): Promise<Review[]> {
   let query = supabase
     .from("reviews")
     .select("*")
-    .eq("status", "approved")
     .order("created_at", { ascending: false });
 
   if (limit) {
@@ -52,12 +49,11 @@ export async function getApprovedReviews(limit?: number): Promise<Review[]> {
   return data;
 }
 
-/** Approved reviews for one specific project, for the Project Details page. */
+/** Reviews for a specific project, most recent first. */
 export async function getApprovedReviewsForProject(projectId: string): Promise<Review[]> {
   const { data, error } = await supabase
     .from("reviews")
     .select("*")
-    .eq("status", "approved")
     .eq("project_id", projectId)
     .order("created_at", { ascending: false });
 
@@ -68,9 +64,32 @@ export async function getApprovedReviewsForProject(projectId: string): Promise<R
   return data;
 }
 
-/** Average rating across all approved reviews, for the overall rating display. */
+/** Average rating across all reviews. */
 export function calculateAverageRating(reviews: Review[]): number {
   if (reviews.length === 0) return 0;
   const total = reviews.reduce((sum, review) => sum + review.rating, 0);
   return Math.round((total / reviews.length) * 10) / 10;
+}
+
+/** Admin: Add or update admin reply on a review */
+export async function addAdminReply(reviewId: string, reply: string) {
+  const { error } = await supabase
+    .from("reviews")
+    .update({
+      admin_reply: reply,
+      replied_at: new Date().toISOString(),
+    })
+    .eq("id", reviewId);
+
+  if (error) throw error;
+}
+
+/** Admin: Delete a review */
+export async function deleteReview(reviewId: string) {
+  const { error } = await supabase
+    .from("reviews")
+    .delete()
+    .eq("id", reviewId);
+
+  if (error) throw error;
 }

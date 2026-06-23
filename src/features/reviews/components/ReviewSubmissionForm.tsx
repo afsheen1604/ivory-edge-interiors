@@ -2,6 +2,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ export function ReviewSubmissionForm() {
   const location = useLocation();
   const navState = location.state as NavigationState | null;
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -57,6 +59,10 @@ export function ReviewSubmissionForm() {
         reviewText: values.reviewText,
         projectId: values.projectId,
       });
+      
+      // Invalidate review queries to refresh cache
+      queryClient.invalidateQueries({ queryKey: ["reviews"] });
+      
       setIsSubmitted(true);
       reset();
     } catch (error) {
@@ -69,7 +75,7 @@ export function ReviewSubmissionForm() {
       <div className="rounded-lg border border-gold-200 bg-gold-50 px-6 py-8 text-center">
         <p className="font-display text-lg text-charcoal">Thank you for your review</p>
         <p className="mt-2 font-body text-sm text-muted-foreground">
-          Your review has been submitted and will appear once approved by our team.
+          Your review has been posted and is now visible.
         </p>
         <Button variant="outline" size="sm" className="mt-5" onClick={() => setIsSubmitted(false)}>
           Submit another review

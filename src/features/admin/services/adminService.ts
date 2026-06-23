@@ -48,3 +48,37 @@ export async function getRecentInquiries(limit = 6) {
   if (error) throw error;
   return (data ?? []) as unknown as InquiryRow[];
 }
+
+/** Admin: Fetch all reviews for management */
+export async function getAllReviews() {
+  const { data, error } = await supabase
+    .from('reviews')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return (data ?? []) as unknown as ReviewRow[];
+}
+
+/** Admin: Add or update admin reply on a review */
+export async function addAdminReply(reviewId: string, reply: string) {
+  const { error } = await supabase
+    .from('reviews')
+    .update({
+      admin_reply: reply,
+      replied_at: new Date().toISOString(),
+    })
+    .eq('id', reviewId);
+
+  if (error) throw error;
+}
+
+/** Admin: Delete a review */
+export async function deleteReview(reviewId: string) {
+  const { error } = await supabase
+    .from('reviews')
+    .delete()
+    .eq('id', reviewId);
+
+  if (error) throw error;
+}
